@@ -24,6 +24,10 @@ pub fn record_alloc(layout: Layout) {
     ALLOC.fetch_add(layout.size(), SeqCst);
 }
 
+pub fn record_dealloc(layout: Layout) {
+    DEALLOC.fetch_add(layout.size(), SeqCst);
+}
+
 pub fn stats() -> Stats {
     let alloc: usize = ALLOC.load(SeqCst);
     let dealloc: usize = DEALLOC.load(SeqCst);
@@ -44,6 +48,7 @@ unsafe impl GlobalAlloc for TrackingAllocator {
     }
 
     unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {
+        record_dealloc(layout);
         System.dealloc(ptr, layout);
     }
 }
