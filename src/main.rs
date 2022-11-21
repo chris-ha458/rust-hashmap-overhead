@@ -1,12 +1,12 @@
-use std::collections::{HashMap, BTreeMap};
 use rand::{thread_rng, Fill, Rng};
+use std::collections::{BTreeMap, HashMap};
 
 use blog_alloc::{alloc, Stats, TrackingAllocator};
 
 #[global_allocator]
 static ALLOC: TrackingAllocator = TrackingAllocator;
 
-pub fn run_and_track<T>(name: &str, meta: &str, f: impl FnOnce() -> T) {
+pub fn run_and_track<T>(name: &str, size: usize, f: impl FnOnce() -> T) {
     alloc::reset();
     alloc::enable();
 
@@ -19,7 +19,7 @@ pub fn run_and_track<T>(name: &str, meta: &str, f: impl FnOnce() -> T) {
         dealloc,
         diff,
     } = alloc::stats();
-    println!("{name},{meta},{alloc},{dealloc},{diff}");
+    println!("{name},{size},{alloc},{dealloc},{diff}");
 
     drop(t);
 }
@@ -53,11 +53,14 @@ fn main() {
     println!("generated data");
     println!();
 
-    let sizes: [usize; 9] = [0, 10, 100, 1_000, 10_000, 50_000, 100_000, 500_000, 1_000_000];
+    let mut sizes: Vec<usize> = vec![0, 10, 100, 1_000];
+    for size in (10_000..=1_000_000).step_by(10_000) {
+        sizes.push(size);
+    }
 
     println!("name,size,alloced,dealloced,diff");
     for size in sizes {
-        run_and_track("hashmap", &size.to_string(), || {
+        run_and_track("hashmap", size, || {
             let mut m = HashMap::<u64, DummyData>::new();
 
             for (key, val) in &large_pairs[..size] {
@@ -67,7 +70,7 @@ fn main() {
             m
         });
 
-        run_and_track("btreemap", &size.to_string(), || {
+        run_and_track("btreemap", size, || {
             let mut m = BTreeMap::<u64, DummyData>::new();
 
             for (key, val) in &large_pairs[..size] {
@@ -77,7 +80,7 @@ fn main() {
             m
         });
 
-        run_and_track("vec-pair", &size.to_string(), || {
+        run_and_track("vec-pair", size, || {
             let mut k: Vec<u64> = Vec::with_capacity(size);
             let mut v: Vec<DummyData> = Vec::with_capacity(size);
 
