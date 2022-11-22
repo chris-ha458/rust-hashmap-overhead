@@ -8,11 +8,8 @@ static ALLOC: TrackingAllocator = TrackingAllocator;
 
 pub fn run_and_track<T>(name: &str, size: usize, f: impl FnOnce() -> T) {
     alloc::reset();
-    alloc::enable();
 
     let t = f();
-
-    alloc::disable();
 
     let Stats {
         alloc,

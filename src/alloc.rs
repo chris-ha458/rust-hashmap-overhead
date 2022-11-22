@@ -1,7 +1,6 @@
 use std::alloc::{GlobalAlloc, Layout, System};
-use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering::SeqCst};
+use std::sync::atomic::{AtomicUsize, Ordering::SeqCst};
 
-static TRACKING_EANBLED: AtomicBool = AtomicBool::new(false);
 static ALLOC: AtomicUsize = AtomicUsize::new(0);
 static DEALLOC: AtomicUsize = AtomicUsize::new(0);
 
@@ -10,14 +9,6 @@ pub struct TrackingAllocator;
 pub fn reset() {
     ALLOC.store(0, SeqCst);
     DEALLOC.store(0, SeqCst);
-}
-
-pub fn enable() {
-    TRACKING_EANBLED.store(true, SeqCst);
-}
-
-pub fn disable() {
-    TRACKING_EANBLED.store(false, SeqCst);
 }
 
 pub fn record_alloc(layout: Layout) {
