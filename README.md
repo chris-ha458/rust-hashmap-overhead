@@ -1,6 +1,6 @@
 # Rust Hashmap Overhead
 
-This repo contains some code that I used while preparing a blog post and
+This repo contains some code that I used while preparing a [blog post](https://ntietz.com/blog/rust-hashmap-overhead/) and
 presentation about the overhead of Rust HashMaps (and BTreeMaps). It's probably
 not going to be maintained, since it was a one-off as an experiment.
 
