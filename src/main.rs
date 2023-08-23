@@ -1,5 +1,5 @@
 use rand::{thread_rng, Fill, Rng};
-use std::collections::{BTreeMap, HashMap};
+use std::collections::{BTreeMap, HashMap,HashSet};
 
 use blog_alloc::{alloc, Stats, TrackingAllocator};
 
@@ -62,6 +62,15 @@ fn main() {
 
             for (key, val) in &large_pairs[..size] {
                 m.insert(*key, *val);
+            }
+
+            m
+        });
+        run_and_track("hashset", size, || {
+            let mut m = HashSet::<u64>::new();
+
+            for (key, _) in &large_pairs[..size] {
+                m.insert(*key);
             }
 
             m
