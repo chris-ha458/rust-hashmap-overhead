@@ -1,6 +1,6 @@
 use rand::{thread_rng, Fill, Rng};
 use std::collections::{BTreeMap, HashMap,HashSet};
-
+use dashmap::{DashMap,DashSet};
 use blog_alloc::{alloc, Stats, TrackingAllocator};
 
 #[global_allocator]
@@ -68,6 +68,24 @@ fn main() {
         });
         run_and_track("hashset", size, || {
             let mut m = HashSet::<u64>::new();
+
+            for (key, _) in &large_pairs[..size] {
+                m.insert(*key);
+            }
+
+            m
+        });
+        run_and_track("dashmap", size, || {
+            let m = DashMap::<u64, DummyData>::new();
+
+            for (key, val) in &large_pairs[..size] {
+                m.insert(*key, *val);
+            }
+
+            m
+        });
+        run_and_track("dashset", size, || {
+            let m = DashSet::<u64>::new();
 
             for (key, _) in &large_pairs[..size] {
                 m.insert(*key);
