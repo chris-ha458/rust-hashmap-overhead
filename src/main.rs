@@ -1,7 +1,7 @@
-use rand::{thread_rng, Fill, Rng};
-use std::collections::{BTreeMap, HashMap,HashSet};
-use dashmap::{DashMap,DashSet};
 use blog_alloc::{alloc, Stats, TrackingAllocator};
+use dashmap::{DashMap, DashSet};
+use rand::{thread_rng, Fill, Rng};
+use std::collections::{BTreeMap, HashMap, HashSet};
 
 #[global_allocator]
 static ALLOC: TrackingAllocator = TrackingAllocator;
